@@ -1,0 +1,7 @@
+
+
+examples/**/*.cs linguist-detectable
+examples/**/*.py linguist-detectable
+examples/**/*.js linguist-detectable
+
+tools/**/src/**/*.cs linguist-detectable
