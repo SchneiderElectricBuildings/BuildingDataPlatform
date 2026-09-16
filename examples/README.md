@@ -31,6 +31,7 @@ For Data consumers
 | [GraphQL Quickstart (.NET)](graphql-quickstart-dotnet/) | .NET | Data consumers | Token validity and GraphQL schema visibility for your entitlements |
 | [Explore REST Operations](explore-rest-operations-python/) | Python | Data consumers | OpenAPI operation discovery and client scaffolding entry points |
 | [REST Quickstart (Python)](rest-quickstart-python/) | Python | Data consumers | First authenticated REST call and response handling (Python) |
+| [Dataset Workflow](dataset-workflow-python/) | Python | Data consumers | Dataset member discovery, creation, listing, and measurement retrieval |
 | [REST Quickstart (Node.js)](rest-quickstart-nodejs/) | Node.js | Data consumers | First authenticated REST call and response handling (Node.js) |
 | [REST Quickstart (.NET)](rest-quickstart-dotnet/) | .NET | Data consumers | First authenticated REST call and response handling (.NET) |
 | --- | --- | --- | --- |
