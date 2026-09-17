@@ -8,7 +8,9 @@
 
 ## Goal
 
-Makes the same authenticated REST calls as [REST Quickstart (Python)](../rest-quickstart-python/README.md), but from an API collection file, with no code to run.
+Makes one authenticated REST call to the BDP API using a Postman Collection, with the
+token stored in your client's vault and the rest of the request built from collection
+variables, no code to run.
 
 The collection contains three requests:
 
