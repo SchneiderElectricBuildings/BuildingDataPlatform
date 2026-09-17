@@ -74,18 +74,6 @@ Most clients include a way to run every request in a collection in sequence and 
 pass/fail summary (Postman calls this the **Runner**; other clients have equivalent
 features).
 
-### Running headless / in CI
-
-The Postman Collection Format v2.1 is not tied to one vendor's UI. It also runs
-headless with [Newman](https://github.com/postmanlabs/newman), which is useful for CI
-smoke tests. Note that Postman Vault references such as `{{vault:BDP_API_TOKEN}}` do
-not resolve under Newman, so use a copy of the collection with a plain
-`{{BDP_API_TOKEN}}` variable for headless runs:
-
-```bash
-newman run bdp-rest-quickstart.json \
-  --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"
-```
 
 ### Keeping the file in the repository unchanged
 

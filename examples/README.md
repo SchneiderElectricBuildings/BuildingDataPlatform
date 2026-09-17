@@ -33,7 +33,7 @@ For Data consumers
 | [REST Quickstart (Python)](rest-quickstart-python/) | Python | Data consumers | First authenticated REST call and response handling (Python) |
 | [REST Quickstart (Node.js)](rest-quickstart-nodejs/) | Node.js | Data consumers | First authenticated REST call and response handling (Node.js) |
 | [REST Quickstart (.NET)](rest-quickstart-dotnet/) | .NET | Data consumers | First authenticated REST call and response handling (.NET) |
-| [REST Quickstart (Postman)](rest-quickstart-postman/) | Postman | Data consumers | First authenticated REST call without writing code (Postman collection) |
+| [REST Quickstart (Postman)](rest-quickstart-postman/) | API collection | Data consumers | First authenticated REST call without writing code (Postman-compatible collection) |
 | --- | --- | --- | --- |
 | [Event Hub Consumer](eventhub-consumer-python/) | Python | Streaming consumers | Event Hub connectivity and incoming telemetry flow |
 | --- | --- | --- | --- |

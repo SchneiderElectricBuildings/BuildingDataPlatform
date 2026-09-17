@@ -48,15 +48,15 @@ a real token.
 The collection uses collection-level bearer auth, so every request sends:
 
 ```text
-Authorization: ******
+Authorization: Bearer {{vault:BDP_API_TOKEN}}
 ```
 
 ### 3. Send a request
 
 Run `List Sites`. Then either:
 
-- run `List Buildings by Site` directly, because `List Sites` stores the first site id
-  into the `siteId` variable, or
+- run `List Buildings by Site` directly, because a test script on `List Sites` stores
+  the first site id into the `siteId` variable automatically, or
 - set `siteId` yourself to any site GUID you are entitled to.
 
 You can also run the whole collection with your client's runner (Postman calls this

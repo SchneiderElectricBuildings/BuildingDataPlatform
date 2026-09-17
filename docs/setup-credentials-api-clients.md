@@ -75,18 +75,6 @@ local to your machine and out of every export.
 Tokens are short-lived by design. When requests start failing with `401`, copy a fresh
 token from the portal and update the same secret entry, no collection changes needed.
 
-### CI and headless runs
-
-Postman Vault (including the `{{vault:BDP_API_TOKEN}}` reference) is a Postman-app-local
-feature and does not resolve when a collection runs headless, for example with Newman.
-For CI, use a copy of the collection where the reference is a plain
-`{{BDP_API_TOKEN}}` variable instead, and pass the token at run time:
-
-```bash
-newman run bdp-rest-quickstart.json \
-  --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"
-```
-
 See [Troubleshooting](troubleshooting.md) if a request fails after setting the token.
 
 ## What's Next
