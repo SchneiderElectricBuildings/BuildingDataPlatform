@@ -42,7 +42,7 @@ For the full catalog and quick-start guidance, see
 | --- | --- | --- |
 | GraphQL Quickstart | [Python](examples/graphql-quickstart-python/) - [Node.js](examples/graphql-quickstart-nodejs/) - [.NET](examples/graphql-quickstart-dotnet/) | Token validity and GraphQL schema visibility for your entitlements |
 | Explore REST Operations | [Python](examples/explore-rest-operations-python/) | OpenAPI operation discovery and client scaffolding entry points |
-| REST Quickstart | [Python](examples/rest-quickstart-python/) - [Node.js](examples/rest-quickstart-nodejs/) - [.NET](examples/rest-quickstart-dotnet/) | First authenticated REST call and response handling |
+| REST Quickstart | [Python](examples/rest-quickstart-python/) - [Node.js](examples/rest-quickstart-nodejs/) - [.NET](examples/rest-quickstart-dotnet/) - [Postman](examples/rest-quickstart-postman/) | First authenticated REST call and response handling |
 | Event Hub Consumer | [Python](examples/eventhub-consumer-python/) | Event Hub connectivity and incoming telemetry flow |
 
 ### For Data providers
