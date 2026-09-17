@@ -83,7 +83,7 @@ Vault/secret storage is a local, interactive-client feature. For CI, pass the to
 a runtime variable instead, for example:
 
 ```bash
-newman run BDP-REST-Quickstart.postman_collection.json \
+newman run bdp-rest-quickstart.json \
   --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"
 ```
 

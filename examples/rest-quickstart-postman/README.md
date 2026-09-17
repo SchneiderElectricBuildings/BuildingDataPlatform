@@ -30,14 +30,14 @@ The collection contains three requests:
 
 | File | Purpose |
 | --- | --- |
-| `BDP-REST-Quickstart.postman_collection.json` | The collection with the three requests and variables |
+| `bdp-rest-quickstart.json` | The collection with the three requests and variables |
 
 ## Steps
 
 ### 1. Import the collection
 
 Follow [Importing an API Collection File](../../docs/importing-api-collections.md) to
-import `BDP-REST-Quickstart.postman_collection.json` into your client.
+import `bdp-rest-quickstart.json` into your client.
 
 ### 2. Set your token
 
@@ -113,7 +113,7 @@ The collection also runs headless with [Newman](https://github.com/postmanlabs/n
 passing the token as an environment variable instead of storing it in a file:
 
 ```bash
-newman run BDP-REST-Quickstart.postman_collection.json \
+newman run bdp-rest-quickstart.json \
   --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"
 ```
 

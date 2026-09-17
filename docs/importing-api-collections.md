@@ -14,7 +14,7 @@ referenced from each of those examples instead of repeating the steps.
 - A REST client that supports the Postman Collection Format v2.1, for example
   Postman, Insomnia, Bruno, Thunder Client, or Hoppscotch.
 - The collection file from the example folder, for example
-  `examples/rest-quickstart-postman/BDP-REST-Quickstart.postman_collection.json`.
+  `examples/rest-quickstart-postman/bdp-rest-quickstart.json`.
 - API token (See [Setup Credentials for API Clients](setup-credentials-api-clients.md))
 
 ## Steps
@@ -78,7 +78,7 @@ headless with [Newman](https://github.com/postmanlabs/newman), which is useful f
 smoke tests:
 
 ```bash
-newman run BDP-REST-Quickstart.postman_collection.json \
+newman run bdp-rest-quickstart.json \
   --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"
 ```
 
