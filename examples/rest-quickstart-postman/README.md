@@ -8,9 +8,7 @@
 
 ## Goal
 
-Makes the same authenticated REST calls as
-[REST Quickstart (Python)](../rest-quickstart-python/README.md), but from an API
-collection file, with no code to run.
+Makes the same authenticated REST calls as [REST Quickstart (Python)](../rest-quickstart-python/README.md), but from an API collection file, with no code to run.
 
 The collection contains three requests:
 
@@ -39,11 +37,7 @@ import `bdp-rest-quickstart.json` into your client.
 
 ### 2. Set your token
 
-Follow [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
-to store your token as a vault secret named `BDP_API_TOKEN`. The collection's
-authorization already references it as `{{vault:BDP_API_TOKEN}}`, so once the secret
-exists in your vault, no further edits are needed. Never edit the committed file to add
-a real token.
+Follow [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md) to store your token as a vault secret named `BDP_API_TOKEN`. The collection's authorization already references it as `{{vault:BDP_API_TOKEN}}`, so once the secret exists in your vault, no further edits are needed. Never edit the committed file to add a real token.
 
 The collection uses collection-level bearer auth, so every request sends:
 
@@ -55,8 +49,7 @@ Authorization: Bearer {{vault:BDP_API_TOKEN}}
 
 Run `List Sites`. Then either:
 
-- run `List Buildings by Site` directly, because a test script on `List Sites` stores
-  the first site id into the `siteId` variable automatically, or
+- run `List Buildings by Site` directly, because a test script on `List Sites` stores the first site id into the `siteId` variable automatically, or
 - set `siteId` yourself to any site GUID you are entitled to.
 
 You can also run the whole collection with your client's runner (Postman calls this

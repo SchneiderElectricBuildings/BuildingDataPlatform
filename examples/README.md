@@ -2,12 +2,10 @@
 
 Use this section to quickly find the example that matches your goal and role.
 
-You will find consumer-focused and provider-focused scenarios, each built as a
-small runnable path that validates one concrete outcome.
+You will find consumer-focused and provider-focused scenarios, each built as a small runnable path that validates one concrete outcome.
 
 Across scenarios, the examples demonstrate practical implementation patterns:
-environment-based credentials, explicit failure messages, CI-friendly execution,
-and scenario-local security and setup guidance.
+environment-based credentials, explicit failure messages, CI-friendly execution, and scenario-local security and setup guidance.
 
 ## Example Pattern
 
@@ -15,10 +13,8 @@ The examples follow a scenario-first pattern:
 
 - Start from a concrete outcome you want to validate.
 - Use the smallest script that proves that outcome.
-- Fail with explicit, actionable errors when credentials, configuration, or access
-  are wrong.
-- Keep setup and run guidance inside each scenario folder so details stay local to
-  the implementation.
+- Fail with explicit, actionable errors when credentials, configuration, or access are wrong.
+- Keep setup and run guidance inside each scenario folder so details stay local to the implementation.
 
 ## Available Scenarios
 
