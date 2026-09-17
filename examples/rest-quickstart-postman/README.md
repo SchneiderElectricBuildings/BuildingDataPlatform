@@ -4,9 +4,7 @@
 
 > This example ships an API collection in the Postman Collection Format v2.1. That
 > format is not Postman-exclusive: it also imports and runs in Insomnia, Bruno,
-> Thunder Client, Hoppscotch, and headless via
-> [Newman](https://github.com/postmanlabs/newman). Use whichever client you prefer;
-> the steps below use Postman's terminology as the reference example.
+> Thunder Client, Hoppscotch, and headless.
 
 ## Goal
 
@@ -42,8 +40,10 @@ import `bdp-rest-quickstart.json` into your client.
 ### 2. Set your token
 
 Follow [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
-to store your token in your client's vault/secret storage, then point the
-`BDP_API_TOKEN` variable at it. Never edit the committed file to add a real token.
+to store your token as a vault secret named `BDP_API_TOKEN`. The collection's
+authorization already references it as `{{vault:BDP_API_TOKEN}}`, so once the secret
+exists in your vault, no further edits are needed. Never edit the committed file to add
+a real token.
 
 The collection uses collection-level bearer auth, so every request sends:
 
@@ -85,15 +85,19 @@ Table - Collection variables
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `baseUrl` | `https://ecostruxure-building-platform-api-uat.se.app` | API host, no `/api` suffix |
 | `apiVersion` | `3.0` | Value sent in the `X-Api-Version` header |
 | `take` | `5` | Page size |
 | `skip` | `0` | Page offset |
 | `siteId` | empty | Required by `List Buildings by Site` |
-| `BDP_API_TOKEN` | empty | ****** set it via vault/secret storage, never in this file |
 
-Point the collection at production by changing `baseUrl` to
+The host is set directly in each request's URL
+(`https://ecostruxure-building-platform-api-uat.se.app`), not a variable. To point the
+collection at production, edit the URL of each request to
 `https://ecostruxure-building-platform-api.se.app`.
+
+The token is not a collection variable; it is referenced directly from your client's
+vault as `{{vault:BDP_API_TOKEN}}` in the collection's Authorization tab. See
+[Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md).
 
 ### Authentication
 
@@ -109,8 +113,11 @@ which defaults to `3.0`. `2.0` is also accepted; other values return
 
 ### Running from CI
 
-The collection also runs headless with [Newman](https://github.com/postmanlabs/newman),
-passing the token as an environment variable instead of storing it in a file:
+Postman Vault is a Postman-app-local feature; the `{{vault:BDP_API_TOKEN}}` reference
+does not resolve when the collection runs headless with
+[Newman](https://github.com/postmanlabs/newman). For CI, use a copy of the collection
+where the authorization value is a plain variable, `{{BDP_API_TOKEN}}`, and pass it at
+run time instead of storing it:
 
 ```bash
 newman run bdp-rest-quickstart.json \

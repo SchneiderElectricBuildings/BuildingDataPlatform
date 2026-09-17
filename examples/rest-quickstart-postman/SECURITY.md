@@ -10,17 +10,18 @@ Credential used:
 
 - `BDP_API_TOKEN`
 
-The token is a collection variable with an empty committed value. It must be set
-through your client's vault/secret storage, never by editing the committed collection
-file. See [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
+The token is stored as a vault secret named `BDP_API_TOKEN`, never as a plain
+collection variable. Requests reference it directly as `{{vault:BDP_API_TOKEN}}`. See
+[Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
 for the exact steps, two rules apply regardless of client:
 
-- Store the token in secret/vault storage, or a variable's **current value** column
-  only. Never in the shared/initial value.
-- Never export or commit a copy of the collection or environment with a real token
-  value filled in.
+- Store the token in secret/vault storage only, never as a plain collection or
+  environment variable value.
+- Never export or commit a copy of the collection with a real token value filled in.
 
-For CI, pass the token at run time instead of storing it:
+Postman Vault is a Postman-app-local feature; `{{vault:BDP_API_TOKEN}}` does not
+resolve under Newman or other CI runners. For CI, use a copy of the collection with a
+plain `{{BDP_API_TOKEN}}` variable and pass the token at run time instead:
 `newman run ... --env-var "BDP_API_TOKEN=$BDP_API_TOKEN"`.
 
 For how access configuration affects what valid credentials can see, read
@@ -38,17 +39,17 @@ for it to be disabled.
 
 ## Input Validation
 
-The collection contains three read-only `GET` requests against fixed paths. Only
-`baseUrl`, `apiVersion`, paging values, and `siteId` are variable, so a mistyped
-variable cannot redirect a call to an unintended operation on the host.
+The collection contains three read-only `GET` requests against fixed, literal URLs.
+Only `apiVersion`, paging values, and `siteId` are variable, so a mistyped variable
+cannot redirect a call to an unintended host or operation.
 
-A collection pre-request script fails the call early with an explicit message when
-`BDP_API_TOKEN` is empty, instead of producing an unexplained `401`.
+The Authorization value references a vault secret; a missing or empty secret produces
+a `401` from the API rather than sending a malformed request.
 
 ## Logging Practices
 
-Test scripts print status hints only. The token is referenced as `{{BDP_API_TOKEN}}`
-and never written to the console or to a response body.
+Test scripts print status hints only. The token is referenced as
+`{{vault:BDP_API_TOKEN}}` and never written to the console or to a response body.
 
 Most clients store request and response history locally; clear it if a response
 contained sensitive data.
@@ -60,7 +61,7 @@ contained sensitive data.
 ```mermaid
 flowchart LR
     subgraph local["Developer machine (trusted)"]
-        E["BDP_API_TOKEN<br/>(client vault/secret storage)"]
+        E["BDP_API_TOKEN<br/>(client vault secret)"]
         S["API collection<br/>(client)"]
         E -->|"1 resolve variable"| S
         S -->|"2 HTTPS request"| API["BDP REST API<br/>(service)"]
@@ -77,12 +78,12 @@ Table - STRIDE
 
 | Category | Threat | Mitigation | Status |
 | --- | --- | --- | --- |
-| **Spoofing** | Token stolen and reused | Token kept in current value only, rotate when exposed | Mitigated (process) |
+| **Spoofing** | Token stolen and reused | Token kept in vault storage only, rotate when exposed | Mitigated (process) |
 | **Tampering** | Request changed in transit | HTTPS/TLS with certificate verification enabled | Mitigated |
 | **Repudiation** | Request source disputes | Platform-side logging and local client history | Accepted |
-| **Information Disclosure** | Token exported or synced with the collection | Empty committed value, vault/secret storage, no token in collection file | Mitigated |
+| **Information Disclosure** | Token exported or synced with the collection | Vault-only storage, no token value in collection file | Mitigated |
 | **Denial of Service** | Endpoint unavailable or slow | Client request timeout setting, manual retry | Accepted |
-| **Elevation of Privilege** | Calling unintended endpoints | Fixed request paths, only host and filters are variable | Mitigated |
+| **Elevation of Privilege** | Calling unintended endpoints | Fixed, literal request URLs; only filters and paging are variable | Mitigated |
 
 ## Compliance
 

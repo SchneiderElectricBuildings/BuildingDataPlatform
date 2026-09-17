@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "2f0a9c41-7d2e-4a1c-9b3e-6c5c1f0f8a10",
     "name": "BDP - REST Quickstart",
-    "description": "First authenticated REST calls to the Building Data Platform API.\n\nSame scenario as examples/rest-quickstart-python, expressed as a single API collection file\n(Postman Collection Format v2.1). Import it into Postman, Insomnia, Bruno, or another\ncompatible client: list organizations, list sites, then list buildings for one site.\n\nSetup:\n1. Import this collection (see docs/importing-api-collections.md).\n2. Set a real value for the `BDP_API_TOKEN` variable using your client's secret/vault\n   storage, not the committed file (see docs/setup-credentials-api-clients.md).\n3. Run `List Sites`, which copies a site id into the `siteId` variable, then run\n   `List Buildings by Site`.\n\nTokens are short-lived by design; re-copy a fresh one when calls start returning 401.",
+    "description": "First authenticated REST calls to the Building Data Platform API.\n\nSame scenario as examples/rest-quickstart-python, expressed as a single API collection file\n(Postman Collection Format v2.1). Import it into Postman, Insomnia, Bruno, or another\ncompatible client: list organizations, list sites, then list buildings for one site.\n\nSetup:\n1. Import this collection (see docs/importing-api-collections.md).\n2. Store your token as a vault/secret entry named `BDP_API_TOKEN` in your client\n   (see docs/setup-credentials-api-clients.md). Requests reference it as\n   `{{vault:BDP_API_TOKEN}}`, never as a plain collection variable.\n3. Run `List Sites`, which copies a site id into the `siteId` variable, then run\n   `List Buildings by Site`.\n\nTokens are short-lived by design; re-copy a fresh one when calls start returning 401.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -23,9 +23,12 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/Organizations?take={{take}}&skip={{skip}}",
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Organizations?take={{take}}&skip={{skip}}",
+          "protocol": "https",
           "host": [
-            "{{baseUrl}}"
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
           ],
           "path": [
             "api",
@@ -82,9 +85,12 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/Sites?take={{take}}&skip={{skip}}",
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Sites?take={{take}}&skip={{skip}}",
+          "protocol": "https",
           "host": [
-            "{{baseUrl}}"
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
           ],
           "path": [
             "api",
@@ -122,9 +128,12 @@
           }
         ],
         "url": {
-          "raw": "{{baseUrl}}/api/Buildings?siteId={{siteId}}&take={{take}}&skip={{skip}}",
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Buildings?siteId={{siteId}}&take={{take}}&skip={{skip}}",
+          "protocol": "https",
           "host": [
-            "{{baseUrl}}"
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
           ],
           "path": [
             "api",
@@ -155,7 +164,7 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{BDP_API_TOKEN}}",
+        "value": "{{vault:BDP_API_TOKEN}}",
         "type": "string"
       }
     ]
@@ -166,10 +175,7 @@
       "script": {
         "type": "text/javascript",
         "exec": [
-          "// Fail fast with a readable message instead of an unexplained 401.",
-          "if (!pm.variables.get('BDP_API_TOKEN')) {",
-          "    throw new Error('BDP_API_TOKEN is empty. Set it via your vault/secret storage, see docs/setup-credentials-api-clients.md.');",
-          "}"
+          ""
         ]
       }
     },
@@ -199,11 +205,6 @@
   ],
   "variable": [
     {
-      "key": "baseUrl",
-      "value": "https://ecostruxure-building-platform-api-uat.se.app",
-      "type": "string"
-    },
-    {
       "key": "apiVersion",
       "value": "3.0",
       "type": "string"
@@ -220,11 +221,6 @@
     },
     {
       "key": "siteId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "BDP_API_TOKEN",
       "value": "",
       "type": "string"
     }

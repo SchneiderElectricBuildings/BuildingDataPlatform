@@ -29,26 +29,24 @@ when you are working from an API collection file, see
    are using it. Vault values stay on your machine only; they are never synced to your
    Postman account or included in exports.
 
-   > Screenshot placeholder — enabling Postman Vault
-   > ![Enable vault placeholder](images/vault-enable.png)
-
 2. Create a secret entry for your token.
 
    Add a new secret named `BDP_API_TOKEN` and paste the token value.
 
    > Screenshot placeholder — adding a BDP_API_TOKEN secret
-   > ![Add secret placeholder](images/vault-add-secret.png)
+   > ![Add secret placeholder](assets/vault-add-secret.png)
 
-3. Reference the secret from the collection, instead of typing the token directly.
+3. Reference the secret directly from the collection, instead of typing the token
+   value.
 
-   - If your client supports vault-style references, use its variable syntax to point
-     to the secret (for example, a `vault:` prefixed reference in Postman).
-   - If your client only supports secret-typed environment variables, create an
-     environment, mark the variable `BDP_API_TOKEN` as **secret**, and set its value in
-     the **current value** column only, never the shared/initial value.
+   - Postman Local Vault: reference the secret directly in any field (URL, header,
+     Authorization value) using `{{vault:BDP_API_TOKEN}}`. No separate variable needed.
+   - If your client does not support direct vault references, create a secret-typed
+     environment or collection variable named `BDP_API_TOKEN`, set its value from the
+     vault entry, and reference it as `{{BDP_API_TOKEN}}` instead.
 
    > Screenshot placeholder — collection variable referencing the secret
-   > ![Reference secret placeholder](images/vault-reference-variable.png)
+   > ![Reference secret placeholder](assets/vault-reference-variable.png)
 
 4. Verify nothing sensitive is included when you export.
 
@@ -60,8 +58,8 @@ when you are working from an API collection file, see
 - The token is stored in your client's local secret/vault storage, not in a collection
   or environment file.
 - Exporting or sharing the collection does not leak the token.
-- Requests that use `{{BDP_API_TOKEN}}` (or the equivalent reference syntax) succeed
-  with a valid, current token.
+- Requests that reference `{{vault:BDP_API_TOKEN}}` (or the equivalent secret-variable
+  syntax for your client) succeed with a valid, current token.
 
 ## Notes
 
@@ -79,8 +77,10 @@ token from the portal and update the same secret entry, no collection changes ne
 
 ### CI and headless runs
 
-Vault/secret storage is a local, interactive-client feature. For CI, pass the token as
-a runtime variable instead, for example:
+Postman Vault (including the `{{vault:BDP_API_TOKEN}}` reference) is a Postman-app-local
+feature and does not resolve when a collection runs headless, for example with Newman.
+For CI, use a copy of the collection where the reference is a plain
+`{{BDP_API_TOKEN}}` variable instead, and pass the token at run time:
 
 ```bash
 newman run bdp-rest-quickstart.json \

@@ -25,7 +25,7 @@ referenced from each of those examples instead of repeating the steps.
    button, the File menu, or a workspace-level "+" menu.
 
    > Screenshot placeholder — client import screen
-   > ![Import screen placeholder](images/import-collection-open-dialog.png)
+   > ![Import screen placeholder](assets/import-collection-open-dialog.png)
 
 2. Select the collection file.
 
@@ -40,12 +40,15 @@ referenced from each of those examples instead of repeating the steps.
    variables with teammates before you have set your own token.
 
    > Screenshot placeholder — import confirmation with workspace selector
-   > ![Import confirmation placeholder](images/import-collection-confirm.png)
+   > ![Import confirmation placeholder](assets/import-collection-confirm.png)
 
 4. Open the imported collection and locate its variables.
 
-   Each example collection ships with variables such as `baseUrl`, `apiVersion`, and
-   `BDP_API_TOKEN`. Do not edit the committed file to add your token; instead follow
+   Each example collection ships with variables for request parameters (for example
+   `apiVersion`, paging values). The API host is a literal value inside each request's
+   URL, not a variable. The bearer token is not a plain variable either: it is
+   referenced from your client's vault, `{{vault:BDP_API_TOKEN}}`. Do not edit the
+   committed file to add your token; instead follow
    [Setup Credentials for API Clients](setup-credentials-api-clients.md) to store it in
    your client's secret/vault storage.
 
@@ -60,8 +63,8 @@ referenced from each of those examples instead of repeating the steps.
 - The collection appears in your client's sidebar with all its requests.
 - Collection variables are visible and editable from the collection or environment
   settings.
-- Sending a request without a token set fails with a clear, early error instead of a
-  confusing `401`, when the collection includes a pre-request check.
+- Sending a request without the vault secret set produces a `401` from the API, since
+  the bearer token resolves to an empty or unresolved value.
 
 ## Notes
 
@@ -75,7 +78,9 @@ features).
 
 The Postman Collection Format v2.1 is not tied to one vendor's UI. It also runs
 headless with [Newman](https://github.com/postmanlabs/newman), which is useful for CI
-smoke tests:
+smoke tests. Note that Postman Vault references such as `{{vault:BDP_API_TOKEN}}` do
+not resolve under Newman, so use a copy of the collection with a plain
+`{{BDP_API_TOKEN}}` variable for headless runs:
 
 ```bash
 newman run bdp-rest-quickstart.json \
@@ -85,9 +90,9 @@ newman run bdp-rest-quickstart.json \
 ### Keeping the file in the repository unchanged
 
 Treat the imported collection as read-only reference material. If you need different
-defaults (a different `baseUrl`, extra requests), fork it into your own workspace
-rather than editing the checked-in file, so the example stays a reliable starting point
-for the next person.
+defaults (a different host, extra requests), fork it into your own workspace rather
+than editing the checked-in file, so the example stays a reliable starting point for
+the next person.
 
 ## What's Next
 
