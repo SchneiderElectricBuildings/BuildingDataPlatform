@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "2f0a9c41-7d2e-4a1c-9b3e-6c5c1f0f8a10",
     "name": "BDP - REST Quickstart",
-    "description": "First authenticated REST calls to the Building Data Platform API.\n\nSame scenario as examples/rest-quickstart-python, expressed as a Postman collection:\nlist organizations, list sites, then list buildings for one site.\n\nSetup:\n1. Import this collection.\n2. Import BDP-REST-Quickstart.postman_environment.template.json as an environment and select it.\n3. Paste a fresh token into the `BDP_API_TOKEN` environment variable (current value only).\n4. Run `List Sites`, copy a site id into `siteId`, then run `List Buildings by Site`.\n\nTokens are short-lived by design; re-copy a fresh one when calls start returning 401.",
+    "description": "First authenticated REST calls to the Building Data Platform API.\n\nSame scenario as examples/rest-quickstart-python, expressed as a single API collection file\n(Postman Collection Format v2.1). Import it into Postman, Insomnia, Bruno, or another\ncompatible client: list organizations, list sites, then list buildings for one site.\n\nSetup:\n1. Import this collection (see docs/importing-api-collections.md).\n2. Set a real value for the `BDP_API_TOKEN` variable using your client's secret/vault\n   storage, not the committed file (see docs/setup-credentials-api-clients.md).\n3. Run `List Sites`, which copies a site id into the `siteId` variable, then run\n   `List Buildings by Site`.\n\nTokens are short-lived by design; re-copy a fresh one when calls start returning 401.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -168,7 +168,7 @@
         "exec": [
           "// Fail fast with a readable message instead of an unexplained 401.",
           "if (!pm.variables.get('BDP_API_TOKEN')) {",
-          "    throw new Error('BDP_API_TOKEN is empty. Paste a fresh token into the selected environment (current value).');",
+          "    throw new Error('BDP_API_TOKEN is empty. Set it via your vault/secret storage, see docs/setup-credentials-api-clients.md.');",
           "}"
         ]
       }

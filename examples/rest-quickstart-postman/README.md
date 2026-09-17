@@ -2,11 +2,17 @@
 
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=postman&logoColor=white)
 
+> This example ships an API collection in the Postman Collection Format v2.1. That
+> format is not Postman-exclusive: it also imports and runs in Insomnia, Bruno,
+> Thunder Client, Hoppscotch, and headless via
+> [Newman](https://github.com/postmanlabs/newman). Use whichever client you prefer;
+> the steps below use Postman's terminology as the reference example.
+
 ## Goal
 
 Makes the same authenticated REST calls as
-[REST Quickstart (Python)](../rest-quickstart-python/README.md), but from Postman,
-with no code to run.
+[REST Quickstart (Python)](../rest-quickstart-python/README.md), but from an API
+collection file, with no code to run.
 
 The collection contains three requests:
 
@@ -16,57 +22,51 @@ The collection contains three requests:
 
 ## Prerequisites
 
-- Postman (desktop app or web, v10 or later)
-- API token (See [Setup Credentials](../../docs/setup-credentials.md) )
+- A REST client that supports the Postman Collection Format v2.1 (desktop app or web)
+- API token (See [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md) )
 - Network: Outbound HTTPS (443) to `ecostruxure-building-platform-api-uat.se.app`
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
-| `BDP-REST-Quickstart.postman_collection.json` | The collection with the three requests |
-| `BDP-REST-Quickstart.postman_environment.template.json` | Environment template, token left empty |
+| `BDP-REST-Quickstart.postman_collection.json` | The collection with the three requests and variables |
 
 ## Steps
 
 ### 1. Import the collection
 
-In Postman: **Import** -> **Files** -> select
-`examples/rest-quickstart-postman/BDP-REST-Quickstart.postman_collection.json`.
+Follow [Importing an API Collection File](../../docs/importing-api-collections.md) to
+import `BDP-REST-Quickstart.postman_collection.json` into your client.
 
-### 2. Import and select the environment
+### 2. Set your token
 
-Import `BDP-REST-Quickstart.postman_environment.template.json` the same way, then
-select **BDP - UAT (template)** in the environment selector (top right).
-
-### 3. Set your token
-
-Open the environment, and paste your token into `BDP_API_TOKEN`:
-
-- Put it in the **Current value** column only.
-- Leave **Initial value** empty so the token is never shared or exported.
+Follow [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
+to store your token in your client's vault/secret storage, then point the
+`BDP_API_TOKEN` variable at it. Never edit the committed file to add a real token.
 
 The collection uses collection-level bearer auth, so every request sends:
 
 ```text
-Authorization: Bearer {{BDP_API_TOKEN}}
+Authorization: ******
 ```
 
-### 4. Send a request
+### 3. Send a request
 
 Run `List Sites`. Then either:
 
 - run `List Buildings by Site` directly, because `List Sites` stores the first site id
-  into the `siteId` environment variable, or
+  into the `siteId` variable, or
 - set `siteId` yourself to any site GUID you are entitled to.
 
-You can also run the whole collection with the **Runner**.
+You can also run the whole collection with your client's runner (Postman calls this
+the **Runner**).
 
 ## Expected Outcome
 
 - HTTP `200` with a JSON body.
-- The `status is 200` test passes in the **Test Results** tab.
-- `List Sites` writes a value into the `siteId` environment variable.
+- The `status is 200` test passes in the test results panel.
+- `List Sites` writes a value into the `siteId` variable.
 
 Expected output sample (body of `List Sites`):
 
@@ -90,7 +90,7 @@ Table - Collection variables
 | `take` | `5` | Page size |
 | `skip` | `0` | Page offset |
 | `siteId` | empty | Required by `List Buildings by Site` |
-| `BDP_API_TOKEN` | empty | Bearer token, set it in the environment |
+| `BDP_API_TOKEN` | empty | ****** set it via vault/secret storage, never in this file |
 
 Point the collection at production by changing `baseUrl` to
 `https://ecostruxure-building-platform-api.se.app`.
@@ -129,12 +129,14 @@ Table - Responses and what they mean
 | **400 Unsupported API Version** | `X-Api-Version` is not `2.0` or `3.0` |
 | **200** with an empty result | Subscription rule is missing, or filters out everything |
 
-The collection test script prints a matching hint in the Postman console.
+The collection test script prints a matching hint in the console.
 
 See [Troubleshooting](../../docs/troubleshooting.md) for the 403 distinction.
 
 ## What's Next
 
+- [Importing an API Collection File](../../docs/importing-api-collections.md)
+- [Setup Credentials for API Clients](../../docs/setup-credentials-api-clients.md)
 - [Access Model and Permissions](../../docs/access-model-and-permissions.md)
 - [Consuming Data](../../docs/consuming-data.md)
 - [Explore REST operations from the OpenAPI bundle](../explore-rest-operations-python/README.md)
