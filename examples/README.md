@@ -2,12 +2,10 @@
 
 Use this section to quickly find the example that matches your goal and role.
 
-You will find consumer-focused and provider-focused scenarios, each built as a
-small runnable path that validates one concrete outcome.
+You will find consumer-focused and provider-focused scenarios, each built as a small runnable path that validates one concrete outcome.
 
 Across scenarios, the examples demonstrate practical implementation patterns:
-environment-based credentials, explicit failure messages, CI-friendly execution,
-and scenario-local security and setup guidance.
+environment-based credentials, explicit failure messages, CI-friendly execution, and scenario-local security and setup guidance.
 
 ## Example Pattern
 
@@ -15,10 +13,8 @@ The examples follow a scenario-first pattern:
 
 - Start from a concrete outcome you want to validate.
 - Use the smallest script that proves that outcome.
-- Fail with explicit, actionable errors when credentials, configuration, or access
-  are wrong.
-- Keep setup and run guidance inside each scenario folder so details stay local to
-  the implementation.
+- Fail with explicit, actionable errors when credentials, configuration, or access are wrong.
+- Keep setup and run guidance inside each scenario folder so details stay local to the implementation.
 
 ## Available Scenarios
 
@@ -34,6 +30,7 @@ For Data consumers
 | [Dataset Workflow](dataset-workflow-python/) | Python | Data consumers | Dataset member discovery, creation, listing, and measurement retrieval |
 | [REST Quickstart (Node.js)](rest-quickstart-nodejs/) | Node.js | Data consumers | First authenticated REST call and response handling (Node.js) |
 | [REST Quickstart (.NET)](rest-quickstart-dotnet/) | .NET | Data consumers | First authenticated REST call and response handling (.NET) |
+| [REST Quickstart (Postman)](rest-quickstart-postman/) | API collection | Data consumers | First authenticated REST call without writing code (Postman-compatible collection) |
 | --- | --- | --- | --- |
 | [Event Hub Consumer](eventhub-consumer-python/) | Python | Streaming consumers | Event Hub connectivity and incoming telemetry flow |
 | --- | --- | --- | --- |

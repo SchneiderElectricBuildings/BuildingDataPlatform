@@ -80,3 +80,4 @@ Set up and store BDP credentials securely so every guide and example in `publish
 - [For access model and permission behavior](access-model-and-permissions.md)
 - [For read access patterns](consuming-data.md)
 - [For runtime failures](troubleshooting.md)
+- [For GUI REST clients such as Postman](setup-credentials-api-clients.md)

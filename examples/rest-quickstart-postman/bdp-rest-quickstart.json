@@ -1,0 +1,228 @@
+{
+  "info": {
+    "_postman_id": "2f0a9c41-7d2e-4a1c-9b3e-6c5c1f0f8a10",
+    "name": "BDP - REST Quickstart",
+    "description": "Makes one authenticated REST call to the Building Data Platform API using a Postman\nCollection (Postman Collection Format v2.1), with the token stored in your client's\nvault and the rest of each request built from collection variables. Import it into\nPostman, Insomnia, Bruno, or another compatible client: list organizations, list\nsites, then list buildings for one site.\n\nSetup:\n1. Import this collection (see docs/importing-api-collections.md).\n2. Store your token as a vault/secret entry named `BDP_API_TOKEN` in your client\n   (see docs/setup-credentials-api-clients.md). Requests reference it as\n   `{{vault:BDP_API_TOKEN}}`, never as a plain collection variable.\n3. Run `List Sites`, which copies a site id into the `siteId` variable, then run\n   `List Buildings by Site`.\n\nTokens are short-lived by design; re-copy a fresh one when calls start returning 401.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Organizations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-Api-Version",
+            "value": "{{apiVersion}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Organizations?take={{take}}&skip={{skip}}",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "api",
+            "Organizations"
+          ],
+          "query": [
+            {
+              "key": "take",
+              "value": "{{take}}"
+            },
+            {
+              "key": "skip",
+              "value": "{{skip}}"
+            }
+          ]
+        },
+        "description": "Returns the organizations your token is entitled to see."
+      },
+      "response": []
+    },
+    {
+      "name": "List Sites",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Convenience: capture the first site id so 'List Buildings by Site' can run next.",
+              "if (pm.response.code === 200) {",
+              "    const body = pm.response.json();",
+              "    const items = Array.isArray(body) ? body : (body.items || []);",
+              "    if (items.length > 0 && items[0].id) {",
+              "        pm.environment.set('siteId', items[0].id);",
+              "        console.log('siteId set to ' + items[0].id);",
+              "    }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-Api-Version",
+            "value": "{{apiVersion}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Sites?take={{take}}&skip={{skip}}",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "api",
+            "Sites"
+          ],
+          "query": [
+            {
+              "key": "take",
+              "value": "{{take}}"
+            },
+            {
+              "key": "skip",
+              "value": "{{skip}}"
+            }
+          ]
+        },
+        "description": "Returns the sites your token is entitled to see, and stores the first site id in the `siteId` environment variable."
+      },
+      "response": []
+    },
+    {
+      "name": "List Buildings by Site",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-Api-Version",
+            "value": "{{apiVersion}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Buildings?siteId={{siteId}}&take={{take}}&skip={{skip}}",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "api",
+            "Buildings"
+          ],
+          "query": [
+            {
+              "key": "siteId",
+              "value": "{{siteId}}"
+            },
+            {
+              "key": "take",
+              "value": "{{take}}"
+            },
+            {
+              "key": "skip",
+              "value": "{{skip}}"
+            }
+          ]
+        },
+        "description": "Returns the buildings of one site. Requires `siteId`: set it manually, or run `List Sites` first."
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{vault:BDP_API_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Shared checks and status-specific hints, mirroring the Python example.",
+          "pm.test('status is 200', function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "if (pm.response.code === 401) {",
+          "    console.warn('HTTP 401: token expired or malformed. Copy a fresh token from the portal.');",
+          "} else if (pm.response.code === 403) {",
+          "    const contentType = pm.response.headers.get('Content-Type') || '';",
+          "    console.warn(contentType.includes('json')",
+          "        ? 'HTTP 403: token valid, but your consumer is not authorized for that data.'",
+          "        : 'HTTP 403: refused before the API. The request did not reach the API.');",
+          "} else if (pm.response.code === 400 && pm.response.text().includes('Unsupported API Version')) {",
+          "    console.warn('HTTP 400: unsupported API version. Use 2.0 or 3.0.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiVersion",
+      "value": "3.0",
+      "type": "string"
+    },
+    {
+      "key": "take",
+      "value": "5",
+      "type": "string"
+    },
+    {
+      "key": "skip",
+      "value": "0",
+      "type": "string"
+    },
+    {
+      "key": "siteId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
