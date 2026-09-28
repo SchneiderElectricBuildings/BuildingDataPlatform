@@ -36,6 +36,10 @@ That prints both servers, every operation, and each operation's parameters with 
 location and whether they are required. `$ref`-ed shared parameters are resolved, so
 headers like `X-Api-Version` appear on every operation they apply to.
 
+Operation parameters override path-level parameters with the same `(name, in)` after
+local `$ref` resolution. Parameters keep their first-seen order: overrides retain the
+path-level position, and operation-only parameters follow in declaration order.
+
 `--markdown` emits a table you can paste into your own design notes.
 
 The portal offers the specification as JSON or YAML. JSON needs nothing beyond the
@@ -108,10 +112,19 @@ Here is what each file does. The example is self-contained, it does not import a
 | File | Responsibility |
 | --- | --- |
 | `list_operations.py` | Parses the OpenAPI bundle, resolves `$ref`-ed parameters, prints operations as text or markdown |
+| `test_list_operations.py` | Standard-library regression tests for parameter merging and output |
 | `README.md` / `SECURITY.md` | Usage and security posture |
 
 There is no `.env.template` here: `list_operations.py` reads a specification file and
 never calls the API, so it needs no credential at all.
+
+## Tests
+
+From this example's folder, run the offline tests with the standard library:
+
+```bash
+python -m unittest -v
+```
 
 ## What's Next
 

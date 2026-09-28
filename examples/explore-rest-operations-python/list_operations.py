@@ -70,23 +70,24 @@ def operations(spec: dict):
             operation = item.get(method)
             if not operation:
                 continue
-            merged = list(shared) + list(operation.get("parameters") or [])
-            parameters = []
-            for raw in merged:
+            # Operation parameters override path parameters by resolved (name, in).
+            # Replacing a dict value preserves the parameter's first-seen position.
+            parameters = {}
+            for raw in list(shared) + list(operation.get("parameters") or []):
                 p = resolve(spec, raw)
                 name = p.get("name")
                 if not name:
                     continue
                 where = p.get("in", "")
                 mark = "*" if p.get("required") else ""
-                parameters.append(f"{name}{mark}" + (f" ({where})" if where else ""))
+                parameters[(name, where)] = f"{name}{mark}" + (f" ({where})" if where else "")
             yield {
                 "method": method.upper(),
                 "path": route,
                 "summary": (operation.get("summary")
                             or operation.get("operationId") or "").strip(),
                 "tags": ", ".join(operation.get("tags") or []),
-                "params": ", ".join(parameters),
+                "params": ", ".join(parameters.values()),
             }
 
 
