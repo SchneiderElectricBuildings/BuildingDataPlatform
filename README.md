@@ -41,6 +41,7 @@ For the full catalog and quick-start guidance, see
 
 | Scenario | Language | What it helps you validate |
 | --- | --- | --- |
+| Retrieve Auth Token | [Python](examples/retrieve-auth-token-python/) - [Node.js](examples/retrieve-auth-token-nodejs/) - [.NET](examples/retrieve-auth-token-dotnet/) - [Postman](examples/retrieve-auth-token-postman/) | Client credentials from the portal and a self-requested API access token |
 | GraphQL Quickstart | [Python](examples/graphql-quickstart-python/) - [Node.js](examples/graphql-quickstart-nodejs/) - [.NET](examples/graphql-quickstart-dotnet/) - [Postman](examples/graphql-quickstart-postman/) | Token validity and GraphQL schema visibility for your entitlements |
 | Explore REST Operations | [Python](examples/explore-rest-operations-python/) | OpenAPI operation discovery and client scaffolding entry points |
 | REST Quickstart | [Python](examples/rest-quickstart-python/) - [Node.js](examples/rest-quickstart-nodejs/) - [.NET](examples/rest-quickstart-dotnet/) - [Postman](examples/rest-quickstart-postman/) | First authenticated REST call and response handling |

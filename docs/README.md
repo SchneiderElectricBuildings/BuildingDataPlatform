@@ -18,6 +18,7 @@ Table – What each guide gives you
 | --- | --- | --- |
 | [Access Model and Permissions](access-model-and-permissions.md) | Account activation, access model, context behavior, and role boundaries | Before debugging empty or partial results |
 | [Setup Credentials](setup-credentials.md) | Secure retrieval, storage, and rotation for API, Event Hub, and IoT Hub credentials | Right after account activation |
+| [Retrieve Client Credentials](retrieve-client-credentials.md) | Portal walkthrough for Tenant ID, Client ID, Client Secret, and Scopes used to request your own API token | Before running a Retrieve Auth Token example |
 | [Setup Credentials for API Clients](setup-credentials-api-clients.md) | Storing an API token in Postman/Insomnia/Bruno-style vault or secret variables | Before running an API collection example |
 | [Importing an API Collection File](importing-api-collections.md) | Generic import steps for Postman Collection Format v2.1 files | Before running any API collection example |
 | [Consuming Data](consuming-data.md) | Decision path for REST, GraphQL, and streaming, plus entry points to examples and specs | When your app reads data from BDP |

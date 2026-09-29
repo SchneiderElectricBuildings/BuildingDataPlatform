@@ -22,6 +22,10 @@ For Data consumers
 
 | Scenario | Language | For | What it helps you validate |
 | --- | --- | --- | --- |
+| [Retrieve Auth Token (Python)](retrieve-auth-token-python/) | Python | Data consumers | Client credentials from the portal and a self-requested API access token |
+| [Retrieve Auth Token (Node.js)](retrieve-auth-token-nodejs/) | Node.js | Data consumers | Client credentials from the portal and a self-requested API access token |
+| [Retrieve Auth Token (.NET)](retrieve-auth-token-dotnet/) | .NET | Data consumers | Client credentials from the portal and a self-requested API access token |
+| [Retrieve Auth Token (Postman)](retrieve-auth-token-postman/) | API collection | Data consumers | Client credentials from the portal and a self-requested API access token, without writing code |
 | [GraphQL Quickstart (Python)](graphql-quickstart-python/) | Python | Data consumers | Token validity and GraphQL schema visibility for your entitlements |
 | [GraphQL Quickstart (Node.js)](graphql-quickstart-nodejs/) | Node.js | Data consumers | Token validity and GraphQL schema visibility for your entitlements |
 | [GraphQL Quickstart (.NET)](graphql-quickstart-dotnet/) | .NET | Data consumers | Token validity and GraphQL schema visibility for your entitlements |
@@ -52,6 +56,7 @@ For Data consumers
 
 - [Access Model and Permissions](../docs/access-model-and-permissions.md)
 - [Setup Credentials](../docs/setup-credentials.md)
+- [Retrieve Client Credentials](../docs/retrieve-client-credentials.md)
 - [Consuming Data](../docs/consuming-data.md)
 - [Providing Data](../docs/providing-data.md)
 - [Repository Security](../SECURITY.md)
