@@ -1,0 +1,196 @@
+{
+  "info": {
+    "_postman_id": "7c1d5e2a-4b8f-4e36-9a1d-3f2b6c8e9d41",
+    "name": "BDP - Retrieve Auth Token",
+    "description": "Requests a Building Data Platform API access token with the OAuth 2.0 client\ncredentials flow (Postman Collection Format v2.1), then uses it for one REST call.\nImport it into Postman, Insomnia, Bruno, or another compatible client.\n\nSetup:\n1. Retrieve the Tenant ID, Client ID, Client Secret, and Scopes from the BDP Portal\n   (see docs/retrieve-client-credentials.md).\n2. Import this collection (see docs/importing-api-collections.md).\n3. Store each value as a vault/secret entry in your client: `BDP_TENANT_ID`,\n   `BDP_CLIENT_ID`, `BDP_CLIENT_SECRET`, and `BDP_SCOPES`\n   (see docs/setup-credentials-api-clients.md). Requests reference them as\n   `{{vault:NAME}}`, never as plain collection variables.\n4. Run `Get Access Token`, which stores the token in the `accessToken` variable,\n   then run `List Sites`.\n\nAccess tokens are short-lived by design; run `Get Access Token` again when calls\nstart returning 401.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Access Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Store the access token for the next requests; never log its value.",
+              "pm.test('status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    const body = pm.response.json();",
+              "    pm.test('response has access_token', function () {",
+              "        pm.expect(body.access_token).to.be.a('string').and.not.empty;",
+              "    });",
+              "    pm.collectionVariables.set('accessToken', body.access_token);",
+              "    console.log('accessToken set, expires in ' + body.expires_in + ' seconds');",
+              "} else {",
+              "    let error = '';",
+              "    try { error = pm.response.json().error || ''; } catch (e) { }",
+              "    const hints = {",
+              "        invalid_client: \"client secret is wrong or expired. Check BDP_CLIENT_SECRET and the credential 'Expires On' date in the portal.\",",
+              "        unauthorized_client: 'client ID not found in this tenant. Check BDP_CLIENT_ID and BDP_TENANT_ID.',",
+              "        invalid_scope: 'scope is not valid. Copy BDP_SCOPES exactly from the portal.',",
+              "        invalid_request: 'request rejected. Check BDP_TENANT_ID and that every value is set.'",
+              "    };",
+              "    console.warn('HTTP ' + pm.response.code + ' ' + error + ': ' + (hints[error] || 'see the response body.'));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "client_id",
+              "value": "{{vault:BDP_CLIENT_ID}}",
+              "type": "text"
+            },
+            {
+              "key": "scope",
+              "value": "{{vault:BDP_SCOPES}}",
+              "type": "text"
+            },
+            {
+              "key": "client_secret",
+              "value": "{{vault:BDP_CLIENT_SECRET}}",
+              "type": "text"
+            },
+            {
+              "key": "grant_type",
+              "value": "client_credentials",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://login.microsoftonline.com/{{vault:BDP_TENANT_ID}}/oauth2/v2.0/token",
+          "protocol": "https",
+          "host": [
+            "login",
+            "microsoftonline",
+            "com"
+          ],
+          "path": [
+            "{{vault:BDP_TENANT_ID}}",
+            "oauth2",
+            "v2.0",
+            "token"
+          ]
+        },
+        "description": "Requests an access token from the Microsoft identity platform with the OAuth 2.0 client credentials flow, and stores it in the `accessToken` collection variable."
+      },
+      "response": []
+    },
+    {
+      "name": "List Sites",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "if (pm.response.code === 401) {",
+              "    console.warn('HTTP 401: token missing, expired, or for the wrong scope. Run Get Access Token again and check BDP_SCOPES.');",
+              "} else if (pm.response.code === 403) {",
+              "    const contentType = pm.response.headers.get('Content-Type') || '';",
+              "    console.warn(contentType.includes('json')",
+              "        ? 'HTTP 403: token valid, but your consumer is not authorized for that data.'",
+              "        : 'HTTP 403: refused before the API. The request did not reach the API.');",
+              "} else if (pm.response.code === 400 && pm.response.text().includes('Unsupported API Version')) {",
+              "    console.warn('HTTP 400: unsupported API version. Use 2.0 or 3.0.');",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "X-Api-Version",
+            "value": "{{apiVersion}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Sites?take={{take}}",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "api",
+            "Sites"
+          ],
+          "query": [
+            {
+              "key": "take",
+              "value": "{{take}}"
+            }
+          ]
+        },
+        "description": "Returns the sites your consumer is entitled to see, using the token stored by `Get Access Token`."
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "apiVersion",
+      "value": "3.0",
+      "type": "string"
+    },
+    {
+      "key": "take",
+      "value": "5",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

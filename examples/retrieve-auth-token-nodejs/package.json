@@ -1,0 +1,26 @@
+{
+  "name": "retrieve-auth-token-nodejs",
+  "version": "1.0.0",
+  "description": "Request a BDP API access token with the OAuth 2.0 client credentials flow, then use it",
+  "type": "module",
+  "main": "get_token.js",
+  "scripts": {
+    "token": "node get_token.js",
+    "start": "node call_api.js"
+  },
+  "keywords": [
+    "oauth2",
+    "client-credentials",
+    "token",
+    "bdp",
+    "quickstart"
+  ],
+  "author": "",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
