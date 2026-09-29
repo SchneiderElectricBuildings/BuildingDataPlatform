@@ -1,9 +1,6 @@
 # Security: Retrieve Auth Token (Python)
 
-`get_token.py` requests an access token from the Microsoft identity platform with
-the OAuth 2.0 client credentials flow and prints it. `call_api.py` requests a
-token the same way, keeps it in memory while it is valid, and uses it for HTTPS calls
-to the REST API. Both handle one client secret and one short-lived access token.
+`get_token.py` requests an access token from the Microsoft identity platform with the OAuth 2.0 client credentials flow and prints it. `call_api.py` requests a token the same way, keeps it in memory while it is valid, and uses it for HTTPS calls to the REST API. Both handle one client secret and one short-lived access token.
 
 ## Credential Management
 
@@ -14,24 +11,15 @@ Credentials used:
 - `BDP_CLIENT_SECRET` (secret, long-lived until the portal **Expires On** date)
 - `BDP_SCOPES`
 
-The scripts read these values from the process environment, and from a local `.env`
-file when present. `.env` is excluded by `.gitignore`; keep it local.
+The scripts read these values from the process environment, and from a local `.env` file when present. `.env` is excluded by `.gitignore`; keep it local.
 
-The scripts do not accept credentials as command-line arguments, so secrets do not
-land in shell history or process lists. The client secret is sent only in the body of
-the HTTPS `POST` to the token endpoint, never in a URL.
+The scripts do not accept credentials as command-line arguments, so secrets do not land in shell history or process lists. The client secret is sent only in the body of the HTTPS `POST` to the token endpoint, never in a URL.
 
-`get_token.py` prints the access token on purpose, to show what it looks like.
-Treat that output as a secret: do not paste it in tickets or chats, and do not redirect
-it to a tracked file. `call_api.py` never prints the token; it keeps it in memory
-only.
+`get_token.py` prints the access token on purpose, to show what it looks like. Treat that output as a secret: do not paste it in tickets or chats, and do not redirect it to a tracked file. `call_api.py` never prints the token; it keeps it in memory only.
 
-Rotate the client secret from the portal (**Rotate Secret**) before it expires, or
-immediately if it was exposed. See
-[Retrieve Client Credentials](../../docs/retrieve-client-credentials.md).
+Rotate the client secret from the portal (**Rotate Secret**) before it expires, or immediately if it was exposed. See [Retrieve Client Credentials](../../docs/retrieve-client-credentials.md).
 
-For how access configuration affects what valid credentials can see, read
-[Access Model and Permissions](../../docs/access-model-and-permissions.md).
+For how access configuration affects what valid credentials can see, read [Access Model and Permissions](../../docs/access-model-and-permissions.md).
 
 ## Network Security
 
@@ -45,16 +33,11 @@ TLS certificate validation is left at the requests library default and is never 
 
 ## Input Validation
 
-The scripts are intentionally minimal teaching code. Hosts and paths are fixed
-literals; only the four credential values are read from the environment. Any
-non-success HTTP status stops the script with an error that includes the status, and
-never the client secret.
+The scripts are intentionally minimal teaching code. Hosts and paths are fixed literals; only the four credential values are read from the environment. Any non-success HTTP status stops the script with an error that includes the status, and never the client secret.
 
 ## Logging Practices
 
-`get_token.py` prints the access token only. `call_api.py` prints
-`requesting a new token` when it refreshes, and the API response bodies. Neither
-script prints the client secret.
+`get_token.py` prints the access token only. `call_api.py` prints `requesting a new token` when it refreshes, and the API response bodies. Neither script prints the client secret.
 
 ## Threat Model
 
@@ -75,8 +58,7 @@ flowchart LR
     API -->|"5 JSON response"| S
 ```
 
-Trust boundaries are crossed twice, at the token request and at the API call, both
-over HTTPS.
+Trust boundaries are crossed twice, at the token request and at the API call, both over HTTPS.
 
 ### STRIDE Analysis
 

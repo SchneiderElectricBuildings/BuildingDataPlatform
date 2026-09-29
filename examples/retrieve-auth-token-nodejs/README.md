@@ -4,9 +4,7 @@
 
 ## Goal
 
-Shows how to request a BDP API access token with the OAuth 2.0 client credentials
-flow, using the credential details from the BDP Portal, and how to use and refresh that
-token when calling the API.
+Shows how to request a BDP API access token with the OAuth 2.0 client credentials flow, using the credential details from the BDP Portal, and how to use and refresh that token when calling the API.
 
 The folder contains two short scripts:
 
@@ -77,8 +75,7 @@ If both are set, the environment variable wins.
 node get_token.js
 ```
 
-The script sends one `POST` to the Microsoft identity platform and prints the
-`access_token` from the response:
+The script sends one `POST` to the Microsoft identity platform and prints the `access_token` from the response:
 
 ```http
 POST https://login.microsoftonline.com/{BDP_TENANT_ID}/oauth2/v2.0/token
@@ -112,9 +109,7 @@ console.log(body.access_token);
 node call_api.js
 ```
 
-In a real application you do not request a new token for every call. The script keeps
-the token and its expiry time, and only requests a new one when there is none yet, or
-when it expires within the next minute:
+In a real application you do not request a new token for every call. The script keeps the token and its expiry time, and only requests a new one when there is none yet, or when it expires within the next minute:
 
 ```javascript
 async function getToken() {
@@ -148,14 +143,12 @@ Authorization: Bearer {access_token}
 X-Api-Version: 3.0
 ```
 
-The script calls `GET /api/Sites` twice: the first call requests a token, the second
-one reuses it.
+The script calls `GET /api/Sites` twice: the first call requests a token, the second one reuses it.
 
 ## Expected Outcome
 
 - `get_token.js` prints one long string starting with `eyJ`: your access token.
-- `call_api.js` prints `requesting a new token` **once**, followed by the JSON
-  list of sites, twice.
+- `call_api.js` prints `requesting a new token` **once**, followed by the JSON list of sites, twice.
 
 Expected output sample of `call_api.js`:
 
@@ -171,16 +164,11 @@ If something is wrong, the script stops with the HTTP status of the failing call
 
 ### Token lifetime
 
-The token response includes `expires_in`, in seconds (typically about one hour). Keep
-the token and reuse it until shortly before it expires, as `call_api.js` does,
-instead of requesting a token for every call.
+The token response includes `expires_in`, in seconds (typically about one hour). Keep the token and reuse it until shortly before it expires, as `call_api.js` does, instead of requesting a token for every call.
 
 ### Reusing the token with the other examples
 
-The token printed by `get_token.js` is a regular BDP API token. You can use it as
-`BDP_API_TOKEN` in the [REST Quickstart](../rest-quickstart-nodejs/README.md) and
-[GraphQL Quickstart](../graphql-quickstart-nodejs/README.md). Treat it as a secret:
-anyone who has it can call the API until it expires.
+The token printed by `get_token.js` is a regular BDP API token. You can use it as `BDP_API_TOKEN` in the [REST Quickstart](../rest-quickstart-nodejs/README.md) and [GraphQL Quickstart](../graphql-quickstart-nodejs/README.md). Treat it as a secret: anyone who has it can call the API until it expires.
 
 ### Common failures
 
@@ -193,8 +181,7 @@ Table - Responses and what they mean
 | **401** from the API | Token acquired for the wrong scope, or expired |
 | **403** from the API | Token valid, but your consumer is not authorized for that data |
 
-The token endpoint response body explains the exact reason in `error_description`
-(for example `AADSTS700016: Application ... was not found in the directory`).
+The token endpoint response body explains the exact reason in `error_description` (for example `AADSTS700016: Application ... was not found in the directory`).
 
 See [Troubleshooting](../../docs/troubleshooting.md) for more.
 

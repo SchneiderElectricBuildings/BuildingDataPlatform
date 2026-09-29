@@ -2,18 +2,14 @@
 
 ## Goal
 
-Collect the four values you need to request a BDP API access token yourself, instead of
-copying a short-lived token from the portal:
+Collect the four values you need to request a BDP API access token yourself, instead of copying a short-lived token from the portal:
 
 - **Tenant ID**
 - **Client ID**
 - **Client Secret**
 - **Scopes**
 
-With these values, your application can call the Microsoft identity platform token
-endpoint (OAuth 2.0 client credentials flow) and get a fresh access token whenever it
-needs one. See the [Retrieve Auth Token examples](../examples/README.md) for runnable
-code.
+With these values, your application can call the Microsoft identity platform token endpoint (OAuth 2.0 client credentials flow) and get a fresh access token whenever it needs one. See the [Retrieve Auth Token examples](../examples/README.md) for runnable code.
 
 ## Prerequisites
 
@@ -34,15 +30,13 @@ code.
 
 3. Open your consumer.
 
-   Select the **Consumers** tab (1), then select your consumer in the list (2), for
-   example `App-learn1`.
+   Select the **Consumers** tab (1), then select your consumer in the list (2), for example `App-learn1`.
 
    ![Consumers tab of the organization, with the consumer highlighted](assets/portal-select-consumer.png)
 
 4. Open the credential you want to use.
 
-   Select the **Credentials** tab (1), then select the credential you want to use (2),
-   for example `System`.
+   Select the **Credentials** tab (1), then select the credential you want to use (2), for example `System`.
 
    ![Credentials tab of the consumer, with the credential highlighted](assets/portal-select-credential.png)
 
@@ -82,8 +76,7 @@ code.
 
    - Method B: Use a local `.env` file.
 
-      Copy the example's `.env.template` to `.env` and fill the values. `.env` is
-      excluded by `.gitignore`.
+      Copy the example's `.env.template` to `.env` and fill the values. `.env` is excluded by `.gitignore`.
 
       ```dotenv
       BDP_TENANT_ID=00000000-0000-0000-0000-000000000000
@@ -92,21 +85,16 @@ code.
       BDP_SCOPES=api://.../.default
       ```
 
-   - Method C: Use your API client's vault (Postman, Insomnia, Bruno, and similar). See
-     [Setup Credentials for API Clients](setup-credentials-api-clients.md) and store
-     each value as its own secret.
+   - Method C: Use your API client's vault (Postman, Insomnia, Bruno, and similar). See [Setup Credentials for API Clients](setup-credentials-api-clients.md) and store each value as its own secret.
 
 > [!TIP]
-> Copy the **Scopes** value exactly as shown in the portal. A missing or modified scope
-> is the most common cause of `invalid_scope` errors when requesting a token.
+> Copy the **Scopes** value exactly as shown in the portal. A missing or modified scope is the most common cause of `invalid_scope` errors when requesting a token.
 
 ## Expected Outcome
 
-- `BDP_TENANT_ID`, `BDP_CLIENT_ID`, `BDP_CLIENT_SECRET`, and `BDP_SCOPES` are available
-  to your application, from environment variables, a local `.env` file, or a vault.
+- `BDP_TENANT_ID`, `BDP_CLIENT_ID`, `BDP_CLIENT_SECRET`, and `BDP_SCOPES` are available to your application, from environment variables, a local `.env` file, or a vault.
 - You know when the client secret expires (**Expires On**).
-- No credential value is hardcoded in scripts, command history snippets, or tracked
-  files.
+- No credential value is hardcoded in scripts, command history snippets, or tracked files.
 
 ## Notes
 
@@ -131,16 +119,12 @@ X-Api-Version: 3.0
 
 ### Client secret vs. access token
 
-- The **client secret** is long-lived (until **Expires On**). It must stay private:
-  anyone who has it can request tokens for your consumer.
-- The **access token** is short-lived. Request a new one when it expires, rather than
-  storing it.
+- The **client secret** is long-lived (until **Expires On**). It must stay private: anyone who has it can request tokens for your consumer.
+- The **access token** is short-lived. Request a new one when it expires, rather than storing it.
 
 ### Rotating the secret
 
-Use **Rotate Secret** in the credential toolbar before the **Expires On** date, or
-immediately if the secret was exposed. Update your stored value right after rotating;
-the previous secret stops working.
+Use **Rotate Secret** in the credential toolbar before the **Expires On** date, or immediately if the secret was exposed. Update your stored value right after rotating; the previous secret stops working.
 
 ## What's Next
 
