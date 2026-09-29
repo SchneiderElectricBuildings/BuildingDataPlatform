@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "6f3a3b4e-0f1f-4b8f-9e4b-6d7d8f2a1c90",
+    "name": "BDP - GraphQL Quickstart",
+    "description": "Checks an API token with REST, then introspects the live GraphQL schema with small focused queries. Import this collection into Postman, Insomnia, Bruno, or another compatible client. Store the token in the client's vault as BDP_API_TOKEN.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Check Token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Api-Version",
+            "value": "{{apiVersion}}",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Sites",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "api",
+            "Sites"
+          ]
+        },
+        "description": "The GraphQL schema is public, so use this REST call to verify that the token is accepted."
+      },
+      "response": []
+    },
+    {
+      "name": "List Root Queries",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"{ __schema { queryType { fields { name description } } } }\"\n}"
+        },
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/graphql",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "graphql"
+          ]
+        },
+        "description": "Returns the root query fields exposed by the live GraphQL schema."
+      },
+      "response": []
+    },
+    {
+      "name": "Inspect Site Type",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"query TypeDetail($name: String!) { __type(name: $name) { name kind fields { name } } }\",\n  \"variables\": {\n    \"name\": \"{{typeName}}\"\n  }\n}"
+        },
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/graphql",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "graphql"
+          ]
+        },
+        "description": "Lists the fields currently exposed on the GraphQL Site type. Change the typeName collection variable to inspect another type."
+      },
+      "response": []
+    },
+    {
+      "name": "List Sites With Filtered Rooms",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const body = pm.response.json();",
+              "    const sites = (body.data && body.data.sites) || [];",
+              "    sites.forEach((site) => {",
+              "        (site.buildings || []).forEach((building) => {",
+              "            const rooms = building.rooms || [];",
+              "            console.log(site.name + ' / ' + building.name + ': ' + rooms.length + ' rooms returned');",
+              "        });",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "graphql",
+          "graphql": {
+            "query": "query ListSitesWithFilteredRooms() {\n  sites {\n    name\n    buildings {\n      name\n      rooms(take: 2) {\n        name\n      }\n    }\n  }\n}",
+            "variables": {}
+          }
+        },
+        "url": {
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/graphql",
+          "protocol": "https",
+          "host": [
+            "ecostruxure-building-platform-api-uat",
+            "se",
+            "app"
+          ],
+          "path": [
+            "graphql"
+          ]
+        },
+        "description": "Lists each site's name with its buildings' names and up to two rooms on each building. The test script prints how many rooms were returned for each building."
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{vault:BDP_API_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text",
+        "exec": [
+          "pm.test('status is 200', function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "if (pm.response.code === 401) {",
+          "    console.warn('HTTP 401: token expired or malformed. Copy a fresh token from the portal.');",
+          "} else if (pm.response.code === 403) {",
+          "    const contentType = pm.response.headers.get('Content-Type') || '';",
+          "    console.warn(contentType.includes('json')",
+          "        ? 'HTTP 403: token valid, but your consumer is not authorized for that data.'",
+          "        : 'HTTP 403: refused before the API. The request did not reach the API.');",
+          "} else if (pm.response.code === 400) {",
+          "    console.warn('HTTP 400: the API rejected the request. GraphQL responses include an errors array with details.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiVersion",
+      "value": "3.0",
+      "type": "string"
+    },
+    {
+      "key": "typeName",
+      "value": "Site",
+      "type": "string"
+    }
+  ]
+}
