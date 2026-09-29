@@ -1,16 +1,23 @@
-# Retrieve Auth Token (.NET projectless)
+# Retrieve Auth Token (.NET)
 
 ![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=white)
 
 ## Goal
 
-Requests a BDP API access token with the OAuth 2.0 client credentials flow, using
-the credential details from the BDP Portal, then uses that token for one REST call to
-prove it is accepted.
+Shows how to request a BDP API access token with the OAuth 2.0 client credentials
+flow, using the credential details from the BDP Portal, and how to use and refresh that
+token when calling the API.
+
+The folder contains two short scripts:
+
+| Script | What it shows |
+| --- | --- |
+| `get_token.cs` | The simplest way to request a token and print it |
+| `call_api.cs` | A more realistic pattern: get a token, reuse it while it is valid, refresh it when needed, and call `GET /api/Sites` |
 
 ## Prerequisites
 
-- .NET SDK 10.0.100 or later (uses file-based apps)
+- .NET SDK 10.0.100 or later (uses file-based apps, no project file needed)
 - Tenant ID, Client ID, Client Secret, and Scopes (See [Retrieve Client Credentials](../../docs/retrieve-client-credentials.md))
 - Network: Outbound HTTPS (443) to `login.microsoftonline.com` and `ecostruxure-building-platform-api-uat.se.app`
 
@@ -21,6 +28,7 @@ prove it is accepted.
 ```bash
 cd examples/retrieve-auth-token-dotnet
 ```
+
 
 ### 2. Set your client credentials
 
@@ -60,113 +68,112 @@ If both are set, the environment variable wins.
 
 ### 3. Request a token
 
-This script uses .NET 10's **file-based app** feature, so no project file is needed. Just run:
-
 ```bash
 dotnet get_token.cs
 ```
 
-Pass script options after `--`, so the `dotnet` CLI does not read them as its own.
+The script sends one `POST` to the Microsoft identity platform and prints the
+`access_token` from the response:
 
-The script:
+```http
+POST https://login.microsoftonline.com/{BDP_TENANT_ID}/oauth2/v2.0/token
+Content-Type: application/x-www-form-urlencoded
 
-1. Sends a `POST` to `https://login.microsoftonline.com/{BDP_TENANT_ID}/oauth2/v2.0/token`.
-2. Reads `access_token` from the response.
-3. Calls `GET /api/Sites?take=5` with `Authorization: Bearer {access_token}`.
+client_id={BDP_CLIENT_ID}&scope={BDP_SCOPES}&client_secret={BDP_CLIENT_SECRET}&grant_type=client_credentials
+```
 
-Options:
+```csharp
+var response = await http.PostAsync(
+    $"https://login.microsoftonline.com/{Environment.GetEnvironmentVariable("BDP_TENANT_ID")}/oauth2/v2.0/token",
+    new FormUrlEncodedContent(new Dictionary<string, string>
+    {
+        ["client_id"] = Environment.GetEnvironmentVariable("BDP_CLIENT_ID")!,
+        ["scope"] = Environment.GetEnvironmentVariable("BDP_SCOPES")!,
+        ["client_secret"] = Environment.GetEnvironmentVariable("BDP_CLIENT_SECRET")!,
+        ["grant_type"] = "client_credentials",
+    }));
+response.EnsureSuccessStatusCode();
+
+using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+Console.WriteLine(json.RootElement.GetProperty("access_token").GetString());
+```
+
+### 4. Use the token to call the API
 
 ```bash
-# only request the token, skip the GET /api/Sites check
-dotnet get_token.cs -- --no-verify
-
-# write only the token to stdout, to reuse it with the other examples
-dotnet get_token.cs -- --print-token
+dotnet call_api.cs
 ```
 
-For example, to feed the [REST Quickstart](../rest-quickstart-dotnet/README.md):
+In a real application you do not request a new token for every call. The script keeps
+the token and its expiry time, and only requests a new one when there is none yet, or
+when it expires within the next minute:
 
-```bash
-# bash
-export BDP_API_TOKEN="$(dotnet get_token.cs -- --print-token)"
+```csharp
+async Task<string> GetToken()
+{
+    // Refresh one minute early so a token never expires in the middle of a call.
+    if (token is null || DateTimeOffset.UtcNow > expiresAt.AddMinutes(-1))
+    {
+        Console.WriteLine("requesting a new token");
+        var response = await http.PostAsync(tokenUrl, new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["client_id"] = Environment.GetEnvironmentVariable("BDP_CLIENT_ID")!,
+            ["scope"] = Environment.GetEnvironmentVariable("BDP_SCOPES")!,
+            ["client_secret"] = Environment.GetEnvironmentVariable("BDP_CLIENT_SECRET")!,
+            ["grant_type"] = "client_credentials",
+        }));
+        response.EnsureSuccessStatusCode();
+
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        token = json.RootElement.GetProperty("access_token").GetString()!;
+        expiresAt = DateTimeOffset.UtcNow.AddSeconds(json.RootElement.GetProperty("expires_in").GetInt32());
+    }
+
+    return token;
+}
 ```
-or
-```powershell
-# powershell
-$env:BDP_API_TOKEN = dotnet get_token.cs -- --print-token
+
+Every API call asks for the token first, then sends it as a bearer token:
+
+```http
+GET https://ecostruxure-building-platform-api-uat.se.app/api/Sites
+Authorization: Bearer {access_token}
+X-Api-Version: 3.0
 ```
+
+The script calls `GET /api/Sites` twice: the first call requests a token, the second
+one reuses it.
 
 ## Expected Outcome
 
-- Exit code `0` when a token is acquired and the API accepts it.
-- The token type and lifetime, with the token value masked.
-- A compact list of sites returned with that token.
+- `get_token.cs` prints one long string starting with `eyJ`: your access token.
+- `call_api.cs` prints `requesting a new token` **once**, followed by the JSON
+  list of sites, twice.
 
-Expected output sample:
+Expected output sample of `call_api.cs`:
 
 ```text
-POST https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/oauth2/v2.0/token
-token: acquired
-  token_type: Bearer
-  expires_in: 3599 seconds
-  access_token: eyJ0eX...a1B2
-GET https://ecostruxure-building-platform-api-uat.se.app/api/Sites?take=5
-status: 200
-items: 2
-  - 8f6...c9d | Example Site
-  - 9ab...72e | North Campus
+requesting a new token
+[{"id": "8f6...c9d", "name": "Example Site", ...}]
+[{"id": "8f6...c9d", "name": "Example Site", ...}]
 ```
+
+If something is wrong, the script stops with the HTTP status of the failing call.
 
 ## Notes
 
-### The call itself (minimal)
-
-If you strip everything down, requesting a token is just:
-
-1. Build the token URL with your tenant ID
-2. Build a form body with `client_id`, `scope`, `client_secret`, and `grant_type=client_credentials`
-3. Send a `POST` and read `access_token` from the JSON response
-
-This is the smallest possible version of the call logic:
-
-```csharp
-using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-
-using var tokenResponse = await http.PostAsync(
-  "https://login.microsoftonline.com/YOUR_TENANT_ID/oauth2/v2.0/token",
-  new FormUrlEncodedContent(new Dictionary<string, string>
-  {
-    ["client_id"] = "YOUR_CLIENT_ID",
-    ["scope"] = "YOUR_SCOPES",
-    ["client_secret"] = "YOUR_CLIENT_SECRET",
-    ["grant_type"] = "client_credentials",
-  }));
-
-using var json = JsonDocument.Parse(await tokenResponse.Content.ReadAsStringAsync());
-string accessToken = json.RootElement.GetProperty("access_token").GetString()!;
-```
-
-Then use the token like any other BDP API token:
-
-```csharp
-using var request = new HttpRequestMessage(HttpMethod.Get,
-  "https://ecostruxure-building-platform-api-uat.se.app/api/Sites");
-
-request.Headers.Authorization = new("Bearer", accessToken);
-request.Headers.Add("X-Api-Version", "3.0");
-request.Headers.Accept.Add(new("application/json"));
-
-using var response = await http.SendAsync(request);
-```
-
-That is the core network logic in `get_token.cs`, without settings loading, argument
-parsing, or error mapping.
-
 ### Token lifetime
 
-The response includes `expires_in`, in seconds (typically about one hour). Cache the
-token and request a new one shortly before it expires, instead of requesting a token
-for every call.
+The token response includes `expires_in`, in seconds (typically about one hour). Keep
+the token and reuse it until shortly before it expires, as `call_api.cs` does,
+instead of requesting a token for every call.
+
+### Reusing the token with the other examples
+
+The token printed by `get_token.cs` is a regular BDP API token. You can use it as
+`BDP_API_TOKEN` in the [REST Quickstart](../rest-quickstart-dotnet/README.md) and
+[GraphQL Quickstart](../graphql-quickstart-dotnet/README.md). Treat it as a secret:
+anyone who has it can call the API until it expires.
 
 ### Common failures
 
@@ -174,12 +181,13 @@ Table - Responses and what they mean
 
 | Response | Meaning |
 | --- | --- |
-| **400 invalid_request** | `BDP_TENANT_ID` is wrong, or a value is empty |
-| **400 unauthorized_client** | `BDP_CLIENT_ID` does not exist in that tenant |
-| **400 invalid_scope** | `BDP_SCOPES` is not exactly the value shown in the portal |
-| **401 invalid_client** | `BDP_CLIENT_SECRET` is wrong or expired (check **Expires On**) |
-| **401** from the API | Token acquired for the wrong scope |
+| **400** from the token endpoint | `BDP_TENANT_ID`, `BDP_CLIENT_ID`, or `BDP_SCOPES` is wrong, or a value is empty |
+| **401** from the token endpoint | `BDP_CLIENT_SECRET` is wrong or expired (check **Expires On**) |
+| **401** from the API | Token acquired for the wrong scope, or expired |
 | **403** from the API | Token valid, but your consumer is not authorized for that data |
+
+The token endpoint response body explains the exact reason in `error_description`
+(for example `AADSTS700016: Application ... was not found in the directory`).
 
 See [Troubleshooting](../../docs/troubleshooting.md) for more.
 
@@ -188,4 +196,4 @@ See [Troubleshooting](../../docs/troubleshooting.md) for more.
 - [REST Quickstart (.NET)](../rest-quickstart-dotnet/README.md)
 - [GraphQL Quickstart (.NET)](../graphql-quickstart-dotnet/README.md)
 - [Access Model and Permissions](../../docs/access-model-and-permissions.md)
-- [Retrieve Auth Token (Node.js)](../retrieve-auth-token-nodejs/README.md)
+- [Retrieve Auth Token (Postman)](../retrieve-auth-token-postman/README.md)

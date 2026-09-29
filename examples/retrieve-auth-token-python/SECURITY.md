@@ -1,8 +1,9 @@
 # Security: Retrieve Auth Token (Python)
 
-`get_token.py` requests an access token from the Microsoft identity platform with the
-OAuth 2.0 client credentials flow, then makes one authenticated HTTPS request to the
-REST API to verify it. It handles one client secret and one short-lived access token.
+`get_token.py` requests an access token from the Microsoft identity platform with
+the OAuth 2.0 client credentials flow and prints it. `call_api.py` requests a
+token the same way, keeps it in memory while it is valid, and uses it for HTTPS calls
+to the REST API. Both handle one client secret and one short-lived access token.
 
 ## Credential Management
 
@@ -13,16 +14,17 @@ Credentials used:
 - `BDP_CLIENT_SECRET` (secret, long-lived until the portal **Expires On** date)
 - `BDP_SCOPES`
 
-The script reads these values from the process environment first, then from a local
-`.env` file when present. `.env` is excluded by `.gitignore`; keep it local.
+The scripts read these values from the process environment, and from a local `.env`
+file when present. `.env` is excluded by `.gitignore`; keep it local.
 
-The script does not accept credentials as command-line arguments, so secrets do not
+The scripts do not accept credentials as command-line arguments, so secrets do not
 land in shell history or process lists. The client secret is sent only in the body of
 the HTTPS `POST` to the token endpoint, never in a URL.
 
-The access token is held in memory only. It is written to stdout only when you pass
-`--print-token`; treat that output as a secret and do not redirect it to a tracked
-file.
+`get_token.py` prints the access token on purpose, to show what it looks like.
+Treat that output as a secret: do not paste it in tickets or chats, and do not redirect
+it to a tracked file. `call_api.py` never prints the token; it keeps it in memory
+only.
 
 Rotate the client secret from the portal (**Rotate Secret**) before it expires, or
 immediately if it was exposed. See
@@ -39,22 +41,20 @@ Outbound HTTPS only:
 - UAT: `https://ecostruxure-building-platform-api-uat.se.app`
 - Production: `https://ecostruxure-building-platform-api.se.app`
 
-TLS certificate validation is left at the standard library default and is never disabled.
+TLS certificate validation is left at the requests library default and is never disabled.
 
 ## Input Validation
 
-The four required values are checked before any request is sent, and missing values
-are reported by name only. The tenant ID is URL-encoded into the token URL, and all
-form fields are URL-encoded in the request body.
-
-Token endpoint failures are mapped from the `error` code to actionable hints. Only the
-first line of `error_description` is printed, which never contains the secret.
+The scripts are intentionally minimal teaching code. Hosts and paths are fixed
+literals; only the four credential values are read from the environment. Any
+non-success HTTP status stops the script with an error that includes the status, and
+never the client secret.
 
 ## Logging Practices
 
-The script prints the token URL, token type, lifetime, a masked preview of the access
-token, and the verification call summary. It never prints the client secret, and
-prints the full access token only with `--print-token`.
+`get_token.py` prints the access token only. `call_api.py` prints
+`requesting a new token` when it refreshes, and the API response bodies. Neither
+script prints the client secret.
 
 ## Threat Model
 
@@ -64,10 +64,10 @@ prints the full access token only with `--print-token`.
 flowchart LR
     subgraph local["Developer machine (trusted)"]
         E["BDP_CLIENT_* in env/.env<br/>(secret store)"]
-        S["get_token.py<br/>(process)"]
+        S["get_token / call_api<br/>(process)"]
         OUT["stdout<br/>(process)"]
         E -->|"1 read"| S
-        S -->|"6 print summary"| OUT
+        S -->|"6 print output"| OUT
     end
     S -->|"2 HTTPS POST client credentials"| IDP["Microsoft identity platform<br/>(service)"]
     IDP -->|"3 access token"| S
@@ -87,8 +87,8 @@ Table - STRIDE
 | **Spoofing** | Client secret stolen and used to mint tokens | Keep secret in env/.env only, rotate from the portal when exposed | Mitigated (process) |
 | **Tampering** | Request changed in transit | HTTPS/TLS with default certificate validation | Mitigated |
 | **Repudiation** | Request source disputes | Identity platform sign-in logs and platform-side logging | Accepted |
-| **Information Disclosure** | Secret or token printed accidentally | Secret never printed; token masked unless `--print-token` | Mitigated |
-| **Denial of Service** | Endpoint unavailable or slow | Explicit timeout and controlled failure path | Accepted |
+| **Information Disclosure** | Token printed by `get_token.py` is shared | Printed on purpose for learning; short-lived; `call_api.py` never prints it | Accepted |
+| **Denial of Service** | Endpoint unavailable or slow | Script stops on failure; token reused to limit token requests | Accepted |
 | **Elevation of Privilege** | Token requested for an unintended scope | Scope comes from the portal value only; API enforces consumer authorization | Mitigated |
 
 ## Compliance
