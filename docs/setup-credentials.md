@@ -27,6 +27,10 @@ Set up and store BDP credentials securely so every guide and example in `publish
    | Event Hub connection string | Partners -> your partner -> your consumer -> Event Hubs -> Primary Connection String | Event Hub consumer |
    | IoT Hub connection string | Data Sources -> your company -> your source -> Connections -> Primary Connection String | DIF telemetry ingress |
 
+   To request API tokens from your own code instead of copying one from the portal,
+   retrieve the client credentials (Tenant ID, Client ID, Client Secret, Scopes) as
+   described in [Retrieve Client Credentials](retrieve-client-credentials.md).
+
 3. Choose your preferred setup method.
 
    You can use either shell environment variables or a local `.env` file. Use the method that best fits your workflow.
