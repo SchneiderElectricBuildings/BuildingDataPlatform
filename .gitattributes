@@ -1,10 +1,6 @@
+# Linguist treats `examples/` as documentation by default, which hides the
+# Python, Node.js, and .NET samples from the repository language bar.
+examples/** linguist-documentation=false
 
-examples/**/*.cs linguist-detectable
-examples/**/*.py linguist-detectable
-examples/**/*.js linguist-detectable
-
-examples/*-dotnet/** linguist-language=C#
-examples/*-python/** linguist-language=Python
-examples/*-nodejs/** linguist-language=JavaScript
-
+# Keep internal tooling out of the language stats.
 tools/** linguist-detectable=false
