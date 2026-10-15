@@ -62,7 +62,7 @@
               "    const body = pm.response.json();",
               "    const items = Array.isArray(body) ? body : (body.items || []);",
               "    if (items.length > 0 && items[0].id) {",
-              "        pm.environment.set('siteId', items[0].id);",
+              "        pm.collectionVariables.set('siteId', items[0].id);",
               "        console.log('siteId set to ' + items[0].id);",
               "    }",
               "}"
@@ -107,7 +107,7 @@
             }
           ]
         },
-        "description": "Returns the sites your token is entitled to see, and stores the first site id in the `siteId` environment variable."
+        "description": "Returns the sites your token is entitled to see, and stores the first site id in the `siteId` collection variable."
       },
       "response": []
     },
@@ -128,7 +128,7 @@
           }
         ],
         "url": {
-          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/Buildings?siteId={{siteId}}&take={{take}}&skip={{skip}}",
+          "raw": "https://ecostruxure-building-platform-api-uat.se.app/api/sites/{{siteId}}/buildings",
           "protocol": "https",
           "host": [
             "ecostruxure-building-platform-api-uat",
@@ -137,21 +137,9 @@
           ],
           "path": [
             "api",
-            "Buildings"
-          ],
-          "query": [
-            {
-              "key": "siteId",
-              "value": "{{siteId}}"
-            },
-            {
-              "key": "take",
-              "value": "{{take}}"
-            },
-            {
-              "key": "skip",
-              "value": "{{skip}}"
-            }
+            "sites",
+            "{{siteId}}",
+            "buildings"
           ]
         },
         "description": "Returns the buildings of one site. Requires `siteId`: set it manually, or run `List Sites` first."
