@@ -30,8 +30,10 @@ cd examples/retrieve-auth-token-python
 ### 2. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -q -r requirements.txt
 ```
+
+> **Note:** `-q` means quiet. If all the requirements are already installed, nothing is printed.
 
 ### 3. Set your client credentials
 
@@ -74,6 +76,9 @@ If both are set, the environment variable wins.
 ```bash
 python get_token.py
 ```
+
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py get_token.py`
 
 The script sends one `POST` to the Microsoft identity platform and prints the `access_token` from the response:
 
