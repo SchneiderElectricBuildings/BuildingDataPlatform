@@ -53,6 +53,9 @@ If both are set, the environment variable wins.
 python call_rest_api.py --resource sites --take 5
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py call_rest_api.py --resource sites --take 5`.
+
 The script supports three simple resources:
 
 - `sites`

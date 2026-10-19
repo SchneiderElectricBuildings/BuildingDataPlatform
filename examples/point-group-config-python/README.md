@@ -31,6 +31,9 @@ cp point_group_config.template.json my_config.json
 python validate_config.py my_config.json
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py validate_config.py my_config.json`.
+
 #### Expected Outcome
 
 By running it on the unedited template first. It reports the four values you must supply, each by its position in the file, which is the quickest way to see what the skeleton expects.
