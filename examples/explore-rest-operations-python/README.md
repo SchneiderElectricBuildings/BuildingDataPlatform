@@ -30,6 +30,9 @@ python list_operations.py bdp-api-spec-v3-bundle-3.0.json
 python list_operations.py bdp-api-spec-v3-bundle-3.0.json --markdown
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py list_operations.py bdp-api-spec-v3-bundle-3.0.json`.
+
 #### Expected Outcome
 
 That prints both servers, every operation, and each operation's parameters with their

@@ -36,6 +36,9 @@ python send_telemetry.py \
    --point YOUR_POINT_REFERENCE_ID --value 0
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py send_telemetry.py ...`.
+
 All three values are yours and none of them is guessable. `SourceId` comes from
 **Data Sources → *your company* → *your source*** in the portal, the point group and
 point reference ids are the ones you chose when you commissioned the point group, in

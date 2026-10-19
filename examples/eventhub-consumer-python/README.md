@@ -10,7 +10,7 @@ A runnable first check that your Event Hub credentials work and telemetry is flo
 
 - Python 3.9 or later
 - Connection string (See [Setup Credentials](../../docs/setup-credentials.md))
-- Packages: `pip install -r requirements.txt`
+- Packages: `pip install -q -r requirements.txt`
 - Network: Outbound AMQP on 5671, or 443 with the WebSocket transport
 
 > [!NOTE]
@@ -28,8 +28,10 @@ First, go to the folder then run the following commands to install the dependenc
 
 ```bash
 cd examples/eventhub-consumer-python
-pip install -r requirements.txt
+pip install -q -r requirements.txt
 ```
+
+> **Note:** `-q` means quiet. If all the requirements are already installed, nothing is printed.
 
 ### 2. Set the connection string
 
@@ -68,6 +70,8 @@ Run the consumer script to read events from the Event Hub.
 python consume.py
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py consume.py`
 
 #### Expected Outcome
 

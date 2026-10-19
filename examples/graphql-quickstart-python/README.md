@@ -64,6 +64,9 @@ If both are set, the environment variable wins. `.env` is excluded by `.gitignor
 python introspect.py
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py introspect.py`.
+
 #### Expected outcome:
 
 ```text

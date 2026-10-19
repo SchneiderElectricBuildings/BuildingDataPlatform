@@ -34,6 +34,9 @@ Run one command to explore the resources available to your credentials and creat
 python dataset_workflow.py build dataset.json
 ```
 
+> [!NOTE]
+> **Windows:** if `python` prints "Python was not found; run without arguments to install from the Microsoft Store", use the Python launcher `py` instead. ex: `py dataset_workflow.py build dataset.json`.
+
 The script first lists all accessible buildings. Select one or more by entering their numbers, such as `1,3`, or enter `all`. It then does the same for floors, rooms/spaces, and commissioned measurement values. Press Enter to skip an optional category.
 
 The REST API calls rooms `spaces`. The script follows every result page and writes each selected resource ID into the correct JSON member array. You do not need to type, remember, or copy any ID.
